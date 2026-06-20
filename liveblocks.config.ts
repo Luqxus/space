@@ -1,10 +1,8 @@
 import { createClient } from "@liveblocks/client";
 
-const liveblocksPublicKey = process.env.NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY!;
-
 const client = createClient({
-  publicApiKey: liveblocksPublicKey,
-})
+  authEndpoint: "api/liveblocks-auth"
+});
 
 
 // Define Liveblocks types for your application
@@ -28,8 +26,8 @@ declare global {
       id: string;
       info: {
         // Example properties, for useSelf, useUser, useOthers, etc.
-        // name: string;
-        // avatar: string;
+        name: string;
+        picture: string;
       };
     };
 

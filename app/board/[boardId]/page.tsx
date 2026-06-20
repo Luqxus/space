@@ -1,8 +1,9 @@
 'use client'
 import { LiveblocksProvider } from "@liveblocks/react";
-import { Canvas } from "./components/Canvas";
-import { Room } from "./components/room";
+import { Canvas } from "./_components/canvas";
+import { Room } from "./_components/room";
 import { use } from "react";
+import { CanvasLoading } from "./_components/canvas-loading";
 
 type BoardPageProps = {
   params: Promise<{
@@ -18,8 +19,8 @@ const Page = (props: BoardPageProps) => {
 
   return (
 
-    <LiveblocksProvider publicApiKey={liveblocksPublicKey}>
-      <Room roomId={boardId}>
+    <LiveblocksProvider authEndpoint={"../../api/liveblocks-auth"}>
+      <Room roomId={boardId} fallback={<CanvasLoading />}>
         <Canvas boardId={boardId} />
       </Room>
     </LiveblocksProvider>
