@@ -56,7 +56,7 @@ export const Toolbar = () => {
         }
       </div>
 
-      <div className="bg-white rounded-md p-1.5 flex flex-col items-center shadow-md">
+      <div className="bg-white p-1.5 flex flex-col items-center shadow-md">
         {hasEditPermissions()
           && (
             <Tools tools={UndoRedoTools} />
