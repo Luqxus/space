@@ -1,17 +1,28 @@
+'use client'
+import { LiveblocksProvider } from "@liveblocks/react";
 import { Canvas } from "./components/Canvas";
+import { Room } from "./components/room";
+import { use } from "react";
 
 type BoardPageProps = {
-  params: {
+  params: Promise<{
     boardId: string
-  }
+  }>
 }
 
-const Page = async (props: BoardPageProps) => {
-  const { boardId } = await props.params;
+
+const liveblocksPublicKey = process.env.NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY!;
+
+const Page = (props: BoardPageProps) => {
+  const { boardId } = use(props.params);
+
   return (
-    <>
-      <Canvas boardId={boardId} />
-    </>
+
+    <LiveblocksProvider publicApiKey={liveblocksPublicKey}>
+      <Room roomId={boardId}>
+        <Canvas boardId={boardId} />
+      </Room>
+    </LiveblocksProvider>
   );
 }
 

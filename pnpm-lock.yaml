@@ -14,6 +14,9 @@ importers:
       '@liveblocks/client':
         specifier: ^3.18.5
         version: 3.18.5(@types/json-schema@7.0.15)
+      '@liveblocks/react':
+        specifier: ^3.18.5
+        version: 3.18.5(@types/json-schema@7.0.15)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react@19.2.4)
       '@phosphor-icons/react':
         specifier: ^2.1.10
         version: 2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -724,6 +727,18 @@ packages:
     resolution: {integrity: sha512-lmg4AwBAlRao3R7F/D2H67QoBm3JvE1BRavWDOW28mteBhY/tmlxob9WjkoQyLjAnNH3ndxBqeE7N8E21HNTrw==}
     peerDependencies:
       '@types/json-schema': ^7
+
+  '@liveblocks/react@3.18.5':
+    resolution: {integrity: sha512-gHz10fD6/c51d1jLD3kufP/v089ytewzjNEz77QyDd3Zd7SFPaWQbxAVxW3BNOAUpPOpPnaDt0wZ6kouYXqy3w==}
+    peerDependencies:
+      '@types/react': ^18 || ^19
+      '@types/react-dom': ^18 || ^19
+      react: ^18 || ^19 || ^19.0.0-rc
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
 
   '@modelcontextprotocol/sdk@1.29.0':
     resolution: {integrity: sha512-zo37mZA9hJWpULgkRpowewez1y6ML5GsXJPY8FI0tBBCd77HEvza4jDqRKOXgHNn867PVGCyTdzqpz0izu5ZjQ==}
@@ -4651,6 +4666,17 @@ snapshots:
   '@liveblocks/core@3.18.5(@types/json-schema@7.0.15)':
     dependencies:
       '@types/json-schema': 7.0.15
+
+  '@liveblocks/react@3.18.5(@types/json-schema@7.0.15)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react@19.2.4)':
+    dependencies:
+      '@liveblocks/client': 3.18.5(@types/json-schema@7.0.15)
+      '@liveblocks/core': 3.18.5(@types/json-schema@7.0.15)
+      react: 19.2.4
+    optionalDependencies:
+      '@types/react': 19.2.14
+      '@types/react-dom': 19.2.3(@types/react@19.2.14)
+    transitivePeerDependencies:
+      - '@types/json-schema'
 
   '@modelcontextprotocol/sdk@1.29.0(zod@3.25.76)':
     dependencies:
