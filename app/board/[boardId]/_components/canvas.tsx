@@ -11,6 +11,7 @@ import { useCanvasState } from "@/hooks/use-canvas-state";
 import { ToolType } from "../types/tools";
 import { LayerPreview } from "./layer-preview";
 import { SelectionBox } from './selection-box';
+import { SelectionTools } from "./selection-tools";
 
 type CanvasProps = {
   boardId: string
@@ -208,7 +209,7 @@ export const Canvas = (props: CanvasProps) => {
 
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
-    e.preventDefault();
+    e.stopPropagation();
     const point = pointerEventToCanvasPoint(e, plane);
 
     if (canvasState.mode === CanvasMode.INSERTING) {
@@ -278,6 +279,11 @@ export const Canvas = (props: CanvasProps) => {
       <Info boardId={props.boardId} />
       <Participants />
       <Toolbar />
+
+      <SelectionTools
+        plane={plane}
+        setLastUsedColor={setLastUsedColor}
+      />
 
       <svg
         className="h-[100vh] w-[100vw]"
