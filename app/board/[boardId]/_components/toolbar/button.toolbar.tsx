@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Hint } from "@/components/ui/hint";
 import { LucideIcon } from "lucide-react";
-import { ToolType } from "./tools";
+import { CanvasMode } from "../../types/canvas";
+import { useCanvasState } from "@/hooks/use-canvas-state";
+import { ToolType } from "../../types/tools";
 
 
 
@@ -14,6 +16,7 @@ type ToolButtonProps = {
 }
 
 export const ToolButton = (props: ToolButtonProps) => {
+
   return (
     <Hint
       label={props.type}
@@ -22,7 +25,8 @@ export const ToolButton = (props: ToolButtonProps) => {
       <Button
         disabled={props.isDisabled}
         size="icon"
-        variant={props.isActive ? "secondary" : "ghost"}>
+        variant={props.isActive ? "secondary" : "ghost"}
+        onClick={props.onClick}>
         <ToolButtonIcon icon={props.icon} />
       </Button>
     </Hint>

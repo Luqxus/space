@@ -1,7 +1,7 @@
-import { Loader } from "lucide-react"
-import { Info } from "./info"
-import { Toolbar } from "./toolbar"
-import { Participants } from "./participants"
+import { Loader } from "lucide-react";
+import { Info } from "./info";
+import { Toolbar } from "./toolbar/toolbar";
+import { Participants } from "./participants";
 
 export const CanvasLoading = () => {
   return (
@@ -11,5 +11,5 @@ export const CanvasLoading = () => {
       <Participants.Skeleton />
       <Toolbar.Skeleton />
     </main>
-  )
-}
+  );
+};

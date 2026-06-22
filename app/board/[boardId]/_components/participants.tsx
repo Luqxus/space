@@ -20,6 +20,7 @@ const OtherUsers = () => {
       {otherUsers.slice(0, MAX_SHOWN_USERS).map(({ connectionId, info }) => {
         return (
           <UserAvatar
+            key={connectionId}
             imageUrl={info.picture}
             name={info.name}
             fallback={info?.name?.[0] ?? "A"} />
@@ -28,6 +29,7 @@ const OtherUsers = () => {
 
       {reachedShownUserLimit &&
         <UserAvatar
+          key={"limit"}
           name={`${otherUsers.length - MAX_SHOWN_USERS} more`}
           fallback={`+${otherUsers.length - MAX_SHOWN_USERS}`} />
       }
@@ -46,6 +48,7 @@ export const Participants = () => {
 
       {currentUser && (
         <UserAvatar
+          key={currentUser.id}
           imageUrl={currentUser.info.picture}
           name={currentUser.info.name}
           fallback={currentUser.info.name[0]}
