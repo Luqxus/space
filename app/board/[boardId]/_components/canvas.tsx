@@ -61,8 +61,44 @@ export const Canvas = (props: CanvasProps) => {
     changeTool(ToolType.SELECT);
   }, [lastUsedColor]);
 
+
+  const translateLayer = useMutation((
+    { storage, self },
+    point: Point
+  ) => {
+    if (canvasState.mode !== CanvasMode.TRANSLATING) {
+      return;
+    }
+
+    const offset = {
+      x: point.x - canvasState.current.x,
+      y: point.y - canvasState.current.y
+    };
+
+    const liveLayers = storage.get("layers");
+    for (const layerId of self.presence.selection) {
+      const layer = liveLayers.get(layerId);
+
+      if (layer) {
+        layer.update({
+          position: {
+            x: layer.get("position").x + offset.x,
+            y: layer.get("position").y + offset.y
+          }
+        });
+      }
+
+      onMutateCanvasState({
+        tool: ToolType.SELECT,
+        mode: CanvasMode.TRANSLATING,
+        current: point,
+        permission: canvasState.permission
+      });
+    }
+  }, [canvasState]);
+
   const resizeLayer = useMutation((
-    {storage, self},
+    { storage, self },
     point: Point
   ) => {
     if (canvasState.mode !== CanvasMode.RESIZING) {
@@ -74,21 +110,29 @@ export const Canvas = (props: CanvasProps) => {
     const layer = liveLayers.get(self.presence.selection[0]);
 
     if (layer) {
-      layer.update({...layer, position: {x: bounds.x, y: bounds.y}, dimentions: {width: bounds.width, height: bounds.height}});
+      layer.update({ ...layer, position: { x: bounds.x, y: bounds.y }, dimentions: { width: bounds.width, height: bounds.height } });
     }
   }, [canvasState]);
 
+  const unselectLayer = useMutation(({
+    self, setMyPresence
+  }) => {
+    if (self.presence.selection.length > 0) {
+      setMyPresence({ selection: [] }, { addToHistory: true });
+    }
+  }, []);
+
 
   const onResizePointerDown = useCallback((corner: Side, initialBounds: XYWH) => {
-      history.pause();
-      onMutateCanvasState({
-          tool: ToolType.SELECT,
-          mode: CanvasMode.RESIZING,
-          initialBound: initialBounds,
-          corner,
-          permission: canvasState.permission
-      });
-  
+    history.pause();
+    onMutateCanvasState({
+      tool: ToolType.SELECT,
+      mode: CanvasMode.RESIZING,
+      initialBound: initialBounds,
+      corner,
+      permission: canvasState.permission
+    });
+
   }, [history, canvasState]);
 
   /**
@@ -114,12 +158,15 @@ export const Canvas = (props: CanvasProps) => {
     e.preventDefault();
     const current = pointerEventToCanvasPoint(e, plane);
 
-    if(canvasState.mode === CanvasMode.RESIZING)  {
+    if (canvasState.mode === CanvasMode.TRANSLATING) {
+      console.log("Translating")
+      translateLayer(current);
+    } else if (canvasState.mode === CanvasMode.RESIZING) {
       resizeLayer(current)
     }
 
     setMyPresence({ cursor: current });
-  }, [plane, canvasState, resizeLayer]);
+  }, [plane, canvasState, translateLayer, resizeLayer]);
 
   /**
    * Clears the user's cursor from presence when the pointer leaves the canvas,
@@ -143,12 +190,39 @@ export const Canvas = (props: CanvasProps) => {
     e.preventDefault();
     const point = pointerEventToCanvasPoint(e, plane);
 
+    if (canvasState.mode === CanvasMode.NONE || canvasState.mode === CanvasMode.PRESSING) {
+      unselectLayer()
+      onMutateCanvasState({
+        tool: ToolType.SELECT,
+        mode: CanvasMode.NONE,
+        permission: canvasState.permission
+      });
+    }
+
     if (canvasState.mode == CanvasMode.INSERTING) {
       insertLayer(canvasState.layerType, point);
     } else {
       changeTool(ToolType.SELECT);
     }
-  }, [plane, canvasState, history, insertLayer]);
+  }, [plane, canvasState, history, insertLayer, unselectLayer]);
+
+
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    e.preventDefault();
+    const point = pointerEventToCanvasPoint(e, plane);
+
+    if (canvasState.mode === CanvasMode.INSERTING) {
+      return;
+    }
+
+    onMutateCanvasState({
+      tool: ToolType.SELECT,
+      mode: CanvasMode.PRESSING,
+      origin: point,
+      permission: canvasState.permission
+    });
+
+  }, [plane, canvasState, canvasState.mode]);
 
   /**
    * Handles pointer-down events on individual layers.
@@ -211,6 +285,7 @@ export const Canvas = (props: CanvasProps) => {
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
         onPointerUp={onPointerUp}
+        onPointerDown={onPointerDown}
       >
         <g style={{
           transform: `translate(${plane.x}px, ${plane.y}px)`
