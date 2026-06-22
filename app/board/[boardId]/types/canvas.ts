@@ -171,6 +171,7 @@ export type CanvasState = {
 } | {
   tool: ToolType.SELECT;
   mode: CanvasMode.PRESSING;
+  origin: Point;
   permission: CanvasPermissions;
 } | {
   tool: ToolType.SELECT;
