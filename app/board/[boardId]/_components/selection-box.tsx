@@ -11,13 +11,13 @@ type SelectionBoxProps = {
 
 const HANDLE_WIDTH = 8;
 
-type ResizeHandlesProps = {
+type ResizeHandleProps = {
   point: Point,
   cursor: string;
   resizeHandler: () => void;
 }
 
-const ResizeHandles = (props: ResizeHandlesProps) => {
+const ResizeHandle = (props: ResizeHandleProps) => {
   return <rect
     className='fill-white stroke-1 stroke-blue-500'
     x={0}
@@ -30,7 +30,7 @@ const ResizeHandles = (props: ResizeHandlesProps) => {
     }}
     onPointerDown={(e) => {
       e.stopPropagation();
-      //TODO: resize handler
+      props.resizeHandler();
     }}
   />
 }
@@ -62,72 +62,85 @@ export const SelectionBox = memo((props: SelectionBoxProps) => {
       />
       {isShowingHandles &&
         <>
-          <ResizeHandles
+          <ResizeHandle
             cursor="nwse-resize"
             point={{
               x: bounds.x - HANDLE_WIDTH / 2,
               y: bounds.y - HANDLE_WIDTH / 2
             }}
-            resizeHandler={() => { }} />
+            resizeHandler={() => {
+              props.onResizeHandlePointerDown(Side.TOP + Side.LEFT, bounds);
+            }} />
 
-          <ResizeHandles
+          <ResizeHandle
             cursor="ns-resize"
             point={{
               x: bounds.x + bounds.width / 2 - HANDLE_WIDTH / 2,
               y: bounds.y - HANDLE_WIDTH / 2
             }}
-            resizeHandler={() => { }} />
+            resizeHandler={() => {
+              props.onResizeHandlePointerDown(Side.TOP, bounds);
+            }} />
 
-          <ResizeHandles
+          <ResizeHandle
             cursor="nesw-resize"
             point={{
               x: bounds.x + bounds.width - HANDLE_WIDTH / 2,
               y: bounds.y - HANDLE_WIDTH / 2
             }}
-            resizeHandler={() => { }} />
+            resizeHandler={() => {
+              props.onResizeHandlePointerDown(Side.TOP + Side.RIGHT, bounds);
+            }} />
 
-          <ResizeHandles
+          <ResizeHandle
             cursor="ew-resize"
             point={{
               x: bounds.x + bounds.width - HANDLE_WIDTH / 2,
               y: bounds.y + bounds.height / 2 - HANDLE_WIDTH / 2
             }}
-            resizeHandler={() => { }} />
+            resizeHandler={() => {
+              props.onResizeHandlePointerDown(Side.RIGHT, bounds);
+            }} />
 
-          <ResizeHandles
+          <ResizeHandle
             cursor="nwse-resize"
             point={{
               x: bounds.x + bounds.width - HANDLE_WIDTH / 2,
               y: bounds.y + bounds.height - HANDLE_WIDTH / 2
             }}
-            resizeHandler={() => { }} />
+            resizeHandler={() => {
+              props.onResizeHandlePointerDown(Side.BOTTOM + Side.RIGHT, bounds);
+            }} />
 
-          <ResizeHandles
+          <ResizeHandle
             cursor="ns-resize"
             point={{
               x: bounds.x + bounds.width / 2 - HANDLE_WIDTH / 2,
               y: bounds.y + bounds.height - HANDLE_WIDTH / 2
             }}
-            resizeHandler={() => { }} />
+            resizeHandler={() => {
+              props.onResizeHandlePointerDown(Side.BOTTOM, bounds);
+            }} />
 
-          <ResizeHandles
+          <ResizeHandle
             cursor="nesw-resize"
             point={{
               x: bounds.x - HANDLE_WIDTH / 2,
               y: bounds.y + bounds.height - HANDLE_WIDTH / 2
             }}
-            resizeHandler={() => { }} />
+            resizeHandler={() => {
+              props.onResizeHandlePointerDown(Side.BOTTOM + Side.LEFT, bounds);
+            }} />
 
-          <ResizeHandles
+          <ResizeHandle
             cursor="ew-resize"
             point={{
               x: bounds.x - HANDLE_WIDTH / 2,
               y: bounds.y + bounds.height / 2 - HANDLE_WIDTH / 2
             }}
-            resizeHandler={() => { }} />
-
-
-
+            resizeHandler={() => {
+              props.onResizeHandlePointerDown(Side.LEFT, bounds);
+            }} />
         </>
       }
     </>
