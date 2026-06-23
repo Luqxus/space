@@ -2,8 +2,9 @@
 
 import { memo } from "react";
 import { Color, Plane } from "../types/canvas";
-import { useSelf } from "@liveblocks/react";
+import { useMutation, useSelf } from "@liveblocks/react";
 import { useSelectionBounds } from "@/hooks/use-selection-bounds";
+import { ColorPicker } from "./color-picker";
 
 type SelectionToolsProps = {
   plane: Plane;
@@ -13,6 +14,19 @@ type SelectionToolsProps = {
 export const SelectionTools = memo((props: SelectionToolsProps) => {
   const selection = useSelf((me) => me.presence.selection);
   const selectionBounds = useSelectionBounds();
+
+  const setFill = useMutation((
+    { storage },
+    fill: Color
+  ) => {
+    const liveLayers = storage.get("layers");
+    props.setLastUsedColor(fill);
+
+    selection?.forEach((id) => {
+      liveLayers.get(id)?.set('fill', fill);
+    });
+
+  }, [selection, props.setLastUsedColor]);
 
   if (!selectionBounds) {
     return null;
@@ -32,7 +46,7 @@ export const SelectionTools = memo((props: SelectionToolsProps) => {
           calc(${y - 16}px - 100%)
         )`
       }}>
-      Selection Tools
+      <ColorPicker onChange={setFill} />
     </div>
   )
 });
